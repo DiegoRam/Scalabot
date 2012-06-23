@@ -16,15 +16,15 @@ class Bot {
     val opcode = tokens(0)
 
     if (tokens(0) == "React") {
-      val rest = tokens(1).dropRight(1)
-      val params = rest.split(',')
-      val strPairs = params.map(s => s.split('='))
-      val kvPairs = strPairs.map(a => (a(0),a(1)))
-      val paramMap = kvPairs.toMap
+//      val rest = tokens(1).dropRight(1)
+//      val params = rest.split(',')
+//      val strPairs = params.map(s => s.split('='))
+//      val kvPairs = strPairs.map(a => (a(0),a(1)))
+      val paramMap = tokens(1).dropRight(1).split(',').map(_.split('=')).map(a => (a(0),a(1))) toMap
 
       val energy = paramMap("energy").toInt
       "Stastus(text=Energy:)" + energy + ")"
 
     }
-    }
+  }
 }
