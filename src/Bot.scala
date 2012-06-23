@@ -16,10 +16,15 @@ class Bot {
     val opcode = tokens(0)
 
     if (tokens(0) == "React") {
-      "Move(direction=1:0)"
-    } else {
-      ""
-    }
-  }
+      val rest = tokens(1).dropRight(1)
+      val params = rest.split(',')
+      val strPairs = params.map(s => s.split('='))
+      val kvPairs = strPairs.map(a => (a(0),a(1)))
+      val paramMap = kvPairs.toMap
 
+      val energy = paramMap("energy").toInt
+      "Stastus(text=Energy:)" + energy + ")"
+
+    }
+    }
 }
