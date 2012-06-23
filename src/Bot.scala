@@ -11,5 +11,15 @@ class ControlFunctionFactory {
 }
 
 class Bot {
-  def respond(input: String) = "Move(direction=1:1)|Say(text=Eh gato)"
+  def respond(input: String) = {
+    val tokens = input.split('(')
+    val opcode = tokens(0)
+
+    if (tokens(0) == "React") {
+      "Move(direction=1:0)"
+    } else {
+      ""
+    }
+  }
+
 }
