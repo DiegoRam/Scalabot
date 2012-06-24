@@ -1,3 +1,4 @@
+
 import util.Random
 
 /**
@@ -94,5 +95,34 @@ case class XY(x: Int, y : Int){
 }
 
 case class View(cells: String) {
-  def apply(index: Int ) = cells.charAt(index)
+  case class View(cells: String) {
+    //use Val instead def cause i wanna cache the value
+    val size = math.sqrt(cells.length).toInt
+    val center = XY(size/2, size/2)
+
+    def apply(relPos: XY) = cellAtRelPos(relPos)
+
+    def indexFromAbsPos(absPos: XY) = absPos.x + absPos.y * size
+    def absPosFromIndex(index: Int) = XY(index % size, index / size)
+    def absPosFromRelPos(relPos: XY) = relPos + center
+    def cellAtAbsPos(absPos: XY) = cells.apply(indexFromAbsPos(absPos))
+
+    def indexFromRelPos(relPos: XY) = indexFromAbsPos(absPosFromRelPos(relPos))
+    def relPosFromAbsPos(absPos: XY) = absPos - center
+    def relPosFromIndex(index: Int) = relPosFromAbsPos(absPosFromIndex(index))
+    def cellAtRelPos(relPos: XY) = cells(indexFromRelPos(relPos))
+
+    def offsetToNearest(c: Char) = {
+      val relativePositions =
+        cells
+          .view
+          .zipWithIndex
+          .filter(_._1 == c)
+          .map(p => relPosFromIndex(p._2))
+      if(relativePositions.isEmpty)
+        None
+      else
+        Some(relativePositions.minBy(_.length))
+    }
+  }
 }
