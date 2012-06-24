@@ -1,3 +1,5 @@
+import util.Random
+
 /**
  * Created with IntelliJ IDEA.
  * User: diego
@@ -11,20 +13,39 @@ class ControlFunctionFactory {
 }
 
 class Bot {
+  val rnd = new Random()
   def respond(input: String) = {
-    val tokens = input.split('(')
-    val opcode = tokens(0)
+    val (opcode, paramMap) = CommandParser(input)
+    if (opcode == "React") {
+      val generation = paramMap("generation").toInt
+      if (generation == 0) {
+        if (paramMap("energy").toInt >= 100 && rnd.nextDouble() < 0.25) {
+          val direction = (rnd.nextInt(3)-1) + ":" + (rnd.nextInt(3)-1)
+          "Spawn(direction=" + direction + ",energy=100,heading=" + direction +")"
+        } else ""
+      } else {
+        val heading =  paramMap("heading")
+        "Move(direction=" + heading + ")"
+      }
+    } else ""
+  }
+}
 
-    if (tokens(0) == "React") {
-//      val rest = tokens(1).dropRight(1)
-//      val params = rest.split(',')
-//      val strPairs = params.map(s => s.split('='))
-//      val kvPairs = strPairs.map(a => (a(0),a(1)))
-      val paramMap = tokens(1).dropRight(1).split(',').map(_.split('=')).map(a => (a(0),a(1))) toMap
-
-      val energy = paramMap("energy").toInt
-      "Stastus(text=Energy:)" + energy + ")"
-
+object CommandParser {
+  def apply(command: String) = {
+    def splitParam(param: String) = {
+      val segments = param.split('=')
+      if( segments.length != 2 )
+        throw new IllegalStateException("invalid key/value pair: " + param)
+      (segments(0),segments(1))
     }
+
+    val segments = command.split('(')
+    if( segments.length != 2 )
+      throw new IllegalStateException("invalid command: " + command)
+
+    val params = segments(1).dropRight(1).split(',')
+    val keyValuePairs = params.map( splitParam ).toMap
+    (segments(0), keyValuePairs)
   }
 }
