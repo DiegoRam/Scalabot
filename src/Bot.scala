@@ -17,19 +17,38 @@ class Bot {
   val rnd = new Random()
   def respond(input: String) = {
     val (opcode, paramMap) = CommandParser(input)
-    if (opcode == "React") {
-      val generation = paramMap("generation").toInt
-      if (generation == 0) {
-        if (paramMap("energy").toInt >= 100 && rnd.nextDouble() < 0.25) {
-          val heading = XY.random(rnd)
-          "Spawn(direction=" + heading + ",energy=100,heading=" + heading +")"
-        } else ""
-      } else {
-        val heading = XY(paramMap("heading"))
-        "Move(direction=" + heading + ")"
-      }
-    } else ""
+    opcode match {
+      case "Welcome" => welcome(
+                            paramMap("name"),
+                            paramMap("path"),
+                            paramMap("apocalypse").toInt,
+                            paramMap("round").toInt
+      )
+      case "React" =>
+        react(
+          paramMap("generation").toInt,
+          View(paramMap("view")),
+          paramMap
+        )
+      case "Goodbye" =>
+        goodbye(
+          paramMap("energy").toInt
+        )
+      case _ =>
+        "" // OK
+    }
+
   }
+  def welcome(name: String, path: String, apocalypse: Int, round: Int) = ""
+
+  def react(generation: Int, view: View, params: Map[String, String]) =
+    if( generation == 0 ) reactAsMaster(view, params) else reactAsSlave(view, params)
+
+  def goodbye(energy: Int) = ""
+
+  def reactAsMaster(view: View, params: Map[String, String]) = "Status(text=Master)"
+
+  def reactAsSlave(view: View, params: Map[String, String]) = "Status(text=Slave)"
 }
 
 object CommandParser {
