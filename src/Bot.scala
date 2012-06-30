@@ -1,4 +1,4 @@
-
+import com.sun.xml.internal.bind.v2.TODO
 import util.Random
 
 /**
@@ -35,20 +35,28 @@ class Bot {
           paramMap("energy").toInt
         )
       case _ =>
-        "" // OK
+        "" // tipo naa
     }
 
   }
-  def welcome(name: String, path: String, apocalypse: Int, round: Int) = ""
+  def welcome(name: String, path: String, apocalypse: Int, round: Int) = "Status(text=Vamo a " + apocalypse + " turnos)"
 
   def react(generation: Int, view: View, params: Map[String, String]) =
     if( generation == 0 ) reactAsMaster(view, params) else reactAsSlave(view, params)
 
-  def goodbye(energy: Int) = ""
+  def goodbye(energy: Int) = "Status(text=Tengo " + energy + " guita amigo!!)"
 
-  def reactAsMaster(view: View, params: Map[String, String]) = "Status(text=Master)"
+  def reactAsMaster(view: View, params: Map[String, String]) = {
+    //TODO armar array de entorno
+    //TODO ordenar por prioridad el array de entorno
+    //TODO si no hay elementos moverse aleatoria mente Pero no hacia elementos Wall
+    //TODO si hay elementos ir por la comida mas cercana si no hay enemigos MOVILES cerca
+    //SI HAY ENEMIGO CERCA- Si hay energia reproducirse hacia la direccion del enemigo movil
+    "Status(text=Diego)"
+  }
 
-  def reactAsSlave(view: View, params: Map[String, String]) = "Status(text=Slave)"
+  def reactAsSlave(view: View, params: Map[String, String]) = "Status(text=Mico)"
+  //TODO si el enemigo esta a mas 3 o mmenos de distancia, explotar.
 }
 
 object CommandParser {
