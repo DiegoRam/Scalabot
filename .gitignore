@@ -1,3 +1,4 @@
 .idea/*
 out/*
-ScalatronBot.iml
+scalabot.iml
+.DS_Store
